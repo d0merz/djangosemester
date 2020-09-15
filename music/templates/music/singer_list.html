@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+    Исполнители
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row"><h1>Исполнители:</h1></div>
+        <div class="row row-cols-2 row-cols-md-4 ">
+            {% for singer in singers %}
+                <!-- Card -->
+                <div class="col mb-2">
+                    <div class="card">
+
+                        <!-- Card image -->
+                        <img class="card-img-top rounded    " src="{% if singer.image %}{{ singer.image.url }}{% else %}
+                            {% static "img/no_singer_image.png" %}{% endif %}"
+                             alt="Card image cap" style="object-fit: cover;">
+
+                        <!-- Card content -->
+                        <div class="card-body">
+                            <!-- Title -->
+                            <h4 class="card-title"><a href="{{ singer.get_absolute_url }}">{{ singer.name }}</a></h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card -->
+            {% empty %}
+                <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

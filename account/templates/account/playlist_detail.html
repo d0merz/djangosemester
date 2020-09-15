@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+    {{ form.media.css }}
+{% endblock %}
+
+{% block title %}
+    {{ album.title }}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <!--Album info block start-->
+        <div class="row">
+            <div class="col-4">
+                <div class="avatar mx-auto white mb-md-0 mb-4 mt-2 pt-2">
+                    <img src="{% if album.image %}{{ album.image.url }}{% else %}
+                            {% static "img/no_album_image.jpg" %}{% endif %}"
+                         alt=""
+                         class="rounded z-depth-1 avatar-img"
+                         width="100%"
+                         height="400px"
+                         style="object-fit: cover;">
+                </div>
+                <h3>{{ album.title }}</h3>
+            </div>
+            <div class="col">
+                <p>Автор: <a href="{{ album.author.get_absolute_url }}">{{ album.author.user.username }}</a></p>
+                <p>Опубликовано: {{ album.published|date:"d F Y" }}</p>
+                <p>{{ album.description|safe }}</p>
+                {% if is_user_playlist %}
+                    <div>
+                        <a class="btn " data-toggle="collapse" href="#playlist-add" aria-expanded="false"
+                           aria-controls="singer-add">
+                            Форма редактирования плейлиста
+                        </a>
+                        <div class="row">
+                            <div class="collapse" id="playlist-add">
+                                <div class="mx-2 row">
+                                    <form method="post" class="form"
+                                          enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        {{ form|crispy }}
+                                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="#" data-id="{{ album.id }}"
+                       data-action="{% if album in request.user.profile.playlists %}delete{% else %}add{% endif %}"
+                       class="playlist btn btn-twitch">
+                    {% if album in request.user.profile.playlists %}Delete{% else %}Add{% endif %}
+                    </a>
+                {% endif %}
+
+            </div>
+        </div>
+        <!--Album info block end-->
+        <br>
+        <hr>
+
+
+        <!--Start tracks block-->
+        <div class="row mt-3">
+            <h1 class="mx-auto mb-2">Tracks</h1>
+            <br>
+            <div class="container mt-2">
+                {% for song in album.tracks.all %}
+                    {% include 'music/track_part.html' with song=song %}
+                {% empty %}
+                    Ничего не найдено
+                {% endfor %}
+
+
+            </div>
+        </div>
+        <!--Ens tracks block-->
+    </div>
+    <script type="text/javascript" src="{% static 'lib/mdbootstrap2/js/jquery.min.js' %}"></script>
+    {{ form.media.js }}
+{% endblock %}
+
+{% block domready %}
+    $('a.playlist').click(function(e){
+        var _this=this;
+        e.preventDefault();
+        $.post(
+            '{% url "account:add-playlist" %}',
+            { id: $(this).data('id'), action: $(this).data('action')},
+            function(data){
+                if (data['status']=='ok'){
+                    var previous_action = $(_this).data('action');
+                    // Изменяем переменную действия.
+                    $(_this).data('action', previous_action == 'add' ?'delete' : 'add');
+                    // Изменяем текст ссылки.
+                    $(_this).text(previous_action == 'add' ? 'Delete' : 'Add');
+                }
+            }
+        );
+    });
+    $('a.track').click(function(e){
+        var _this=this;
+        e.preventDefault();
+        $.post(
+            '{% url "account:add-song" %}',
+            { id: $(this).data('id'), action: $(this).data('action')},
+            function(data){
+                if (data['status']=='ok'){
+                    var previous_action = $(_this).data('action');
+                    // Изменяем переменную действия.
+                    $(_this).data('action', previous_action == 'add' ?'delete' : 'add');
+                    // Изменяем текст ссылки.
+                    $(_this).children(".fas").toggleClass('fa-minus fa-plus');
+                }
+            }
+        );
+    });
+{% endblock %}

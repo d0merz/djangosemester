@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    {{ profile.user.username }}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+
+
+        <!--Start singer block-->
+        <div class="row">
+            <div class="col-4 float-left mt-3s">
+                <div class="avatar mx-auto white mb-md-0 mb-4 mt-2 pt-2">
+                    <img src="{% if profile.photo %}{{ profile.photo.url }}{% else %}
+                            {% static "img/no_singer_image.png" %}{% endif %}"
+                         alt=""
+                         class="rounded z-depth-1 avatar-img"
+                         width="100%"
+                         height="400px"
+                         style="object-fit: cover;">
+                </div>
+
+            </div>
+            <div class="col float-right">
+                <div class="ex1">
+                    <h1>
+                        <span class="ez-toc-section" id="-1">{{ profile.user.username }}</span>
+                    </h1>
+                </div>
+                <br><br>
+                <p>Имя: {{ profile.user.first_name }}</p>
+                <p>Фамилия: {{ profile.user.last_name }}</p>
+                <p>Пол: {{ profile.gender.title }}</p>
+                {% if request.user.is_authenticated %}
+                    <a href="#" data-id="{{ profile.user.id }}"
+                       data-action="{% if request.user in profile.user.followers.all %}un{% endif %}follow"
+                       class="follow btn btn-green">
+                        {% if request.user not in profile.user.followers.all %}
+                            Follow
+                        {% else %}
+                            Unfollow
+                        {% endif %}
+                    </a>
+                {% endif %}
+
+                <h2>Playlists:</h2>
+                <!--Slider start-->
+                {% if isHavePlaylists %}
+
+                    <!--Carousel Wrapper-->
+                    <div id="multi-item-example" class="carousel slide carousel-multi-item" data-ride="carousel">
+                        <!--Controls-->
+                        <div class="controls-top">
+                            <a class="btn-floating" href="#multi-item-example" data-slide="prev"><i
+                                    class="fas fa-chevron-left"></i></a>
+                            <a class="btn-floating" href="#multi-item-example" data-slide="next"><i
+                                    class="fas fa-chevron-right"></i></a>
+                        </div>
+                        <!--/.Controls-->
+
+                        <!--Indicators-->
+                        <ol class="carousel-indicators">
+                            <li data-target="#multi-item-example" data-slide-to="0" class="active"></li>
+                            {% for slide in slides %}
+                                <li data-target="#multi-item-example" data-slide-to="{{ slide }}"></li>
+                            {% endfor %}
+                        </ol>
+                        <!--/.Indicators-->
+
+                        <!--Slides-->
+                        <div class="carousel-inner" role="listbox">
+                            {% for album in albums %}
+                                {% if forloop.counter0|divisibleby:"3" %}
+                                    <div class="carousel-item{% if forloop.first %} active {% endif %}">
+                                {% endif %}
+                            <div class="col-md-4">
+                                <div class="card mb-2">
+                                    <img class="card-img-top"
+                                         src="{% if album.image %}{{ album.image.url }}{% else %}
+                                                                          {% static "img/no_album_image.jpg" %}{% endif %}"
+                                         alt="Card image cap"
+                                         style="object-fit: cover;">
+                                    <div class="card-body">
+                                        <h4 class="card-title">
+                                            <a class="card-link"
+                                               href="{{ album.get_absolute_url }}">{{ album.title }}</a>
+                                        </h4>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if forloop.counter|divisibleby:"3" or forloop.last %}
+                                </div>
+                            {% endif %}
+                            {% endfor %}
+
+                        </div>
+                        <!--/.Slides-->
+
+
+                    </div>
+                    <!--/.Carousel Wrapper-->
+                {% else %}
+                    Нет альбомов
+                {% endif %}
+                <!--Slider end-->
+
+            </div>
+        </div>
+        <!--End singer block-->
+
+        <!--Start tracks block-->
+        <div class="row mx-auto"><h2>Трэки</h2></div>
+        <div class="row container mt-2">
+
+            <div class="col">
+                {% for song in profile.user.tracks.all %}
+                    {% include 'music/track_part.html' with song=song %}
+                {% empty %}
+                    Этот пользователь еще не добавил к себе музыку
+                {% endfor %}
+            </div>
+        </div>
+        <!--End block tracks-->
+
+    </div>
+{% endblock %}
+
+{% block domready %}
+    $('a.track').click(function(e){
+    var _this=this;
+    e.preventDefault();
+    $.post(
+    '{% url "account:add-song" %}',
+    { id: $(this).data('id'), action: $(this).data('action')},
+    function(data){
+    if (data['status']=='ok'){
+    var previous_action = $(_this).data('action');
+    // Изменяем переменную действия.
+    $(_this).data('action', previous_action == 'add' ?'delete' : 'add');
+    // Изменяем текст ссылки.
+    $(_this).children(".fas").toggleClass('fa-minus fa-plus');
+    }
+    }
+    );
+    });
+
+    $('a.follow').click(function(e){
+    var _this=this;
+    e.preventDefault();
+    $.post(
+    '{% url "account:user_follow" %}',
+    { id: $(this).data('id'), action: $(this).data('action')},
+    function(data){
+    if (data['status']=='ok'){
+    var previous_action = $(_this).data('action');
+    // Изменяем переменную действия.
+    $(_this).data('action', previous_action == 'follow' ?'unfollow' : 'follow');
+    // Изменяем текст ссылки.
+    $('a.follow').text(previous_action == 'follow' ? 'Unfollow' : 'Follow');
+    }
+    }
+    );
+    });
+
+
+{% endblock %}

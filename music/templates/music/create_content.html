@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css"/>
+    {{ singer_form.media.css }}
+    {{ album_form.media.css }}
+    {{ song_form.media.css }}
+{% endblock %}
+
+{% block title %}
+    Добавить исполнителя
+{% endblock %}
+
+{% block content %}
+
+    <div class="container my-5">
+        <!--Add singer-->
+        <div>
+            <a class="btn btn-primary" data-toggle="collapse" href="#singer-add" aria-expanded="false"
+               aria-controls="singer-add">
+                Форма добавления исполнителя
+            </a>
+            <div class="row">
+                <div class="collapse" id="singer-add">
+                    <div class="mx-2 row">
+                        <form action="{% url 'music:singer_create' %}" method="post" class="form"
+                              enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ singer_form|crispy }}
+                            <button type="submit" class="btn btn-success">Добавить исполнителя</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--./Add singer-->
+
+        <!--Add album-->
+        <div>
+            <a class="btn btn-primary" data-toggle="collapse" href="#album-add" aria-expanded="false"
+               aria-controls="album-add">
+                Форма добавления альбома
+            </a>
+            <div class="row">
+                <div class="collapse" id="album-add">
+                    <form action="{% url 'music:album_create' %}" method="post" class="form"
+                          enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ album_form|crispy }}
+                        <button type="submit" class="btn btn-success">Добавить альбом</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!--./Add album-->
+
+        <!--Add song-->
+        <div>
+            <a class="btn btn-primary" data-toggle="collapse" href="#song-add" aria-expanded="false"
+               aria-controls="song-add">
+                Форма добавления трека
+            </a>
+            <div class="row">
+                <div class="collapse" id="song-add">
+                    <div class="row mx-2">
+                        <form action="{% url 'music:song_create' %}" method="post" class="form"
+                              enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="form-row">
+                                <div class="form-group col mb-0">{{ song_form.title|as_crispy_field }}</div>
+                                <div class="form-group col mb-0">{{ song_form.album|as_crispy_field }}</div>
+                                <div class="form-group col mb-0">{{ song_form.singers|as_crispy_field }}</div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col mb-0">{{ song_form.track|as_crispy_field }}</div>
+                                <div class="form-group col mb-0">{{ song_form.clip_link|as_crispy_field }}</div>
+                                <div class="form-group col mb-0">{{ song_form.image|as_crispy_field }}</div>
+                            </div>
+                            {{ song_form.published|as_crispy_field }}
+                            {{ song_form.genre|as_crispy_field }}
+
+                            <button type="submit" class="btn btn-success">Добавить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--./Add song-->
+
+
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <script type="text/javascript" src="{% static 'lib/mdbootstrap2/js/jquery.min.js' %}"></script>
+    {{ song_form.media.js }}
+    {{ singer_form.media.js }}
+    {{ album_form.media.js }}
+{% endblock %}

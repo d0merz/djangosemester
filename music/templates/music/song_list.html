@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+    Треки
+{% endblock %}
+
+{% block content %}
+
+    <!--Search input-->
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col">
+            <form class="form-inline d-flex justify-content-center md-form form-sm mt-0" action="" method="get">
+                <button type="submit" class="btn btn-toolbar"><i class="fas fa-search" aria-hidden="true"></i></button>
+                <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search"
+                       aria-label="Search" name="q">
+            </form>
+        </div>
+    </div>
+    <!--/.Search input-->
+
+    <div class="row">
+        <!--Genre column-->
+        <div class="col-3 float-left">
+            <h3 class="text-center">Жанры</h3>
+            <hr style="border: 0;
+                       height: 1px;
+                       background-image: -webkit-linear-gradient(left, #fff, #000, #fff);"/>
+            <ul style="list-style-type: none">
+                <li class="">
+                    <a class="chip {% if not genre %}blue{% endif %}" href="{% url "music:song_list" %}">Все</a>
+                </li>
+                {% for g in genres %}
+                    <li class="">
+                        <a class="chip {% if g.slug == genre.slug %}blue{% endif %}"
+                           href="{{ g.get_absolute_url }}">{{ g.name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <!--/.Genre column-->
+
+        <!--Tracks column-->
+        <div class="col">
+            <h1 class="mx-auto mb-2">Музыка</h1>
+            <br>
+            <div class="container mt-2">
+                {% for song in songs %}
+                    {% include 'music/track_part.html' with song=song %}
+                {% empty %}
+                    Ничего не найдено
+                    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                {% endfor %}
+
+
+            </div>
+        </div>
+        <!--/.Tracks column-->
+    </div>
+{% endblock %}
+
+{% block domready %}
+    $('a.track').click(function(e){
+        var _this=this;
+        e.preventDefault();
+        $.post(
+            '{% url "account:add-song" %}',
+            { id: $(this).data('id'), action: $(this).data('action')},
+            function(data){
+                if (data['status']=='ok'){
+                    var previous_action = $(_this).data('action');
+                    // Изменяем переменную действия.
+                    $(_this).data('action', previous_action == 'add' ?'delete' : 'add');
+                    // Изменяем текст ссылки.
+                    $(_this).children(".fas").toggleClass('fa-minus fa-plus');
+                }
+            }
+        );
+    });
+{% endblock %}

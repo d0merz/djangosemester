@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    {{ album.title }}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <!--Album info block start-->
+        <div class="row">
+            <div class="col-4">
+                <div class="avatar mx-auto white mb-md-0 mb-4 mt-2 pt-2">
+                    <img src="{% if album.image %}{{ album.image.url }}{% else %}
+                            {% static "img/no_album_image.jpg" %}{% endif %}"
+                         alt=""
+                         class="rounded z-depth-1 avatar-img"
+                         width="100%"
+                         height="400px"
+                         style="object-fit: cover;">
+                </div>
+                <h3>{{ album.title }}</h3>
+            </div>
+            <div class="col">
+                <p>Автор: {{ album.author.name }}</p>
+                <p>Опубликовано: {{ album.published|date:"d F Y" }}</p>
+                {% for song in  songs_count_by_genre %}
+                    {% if song.cnt > 0 %}
+                        <p>{{ song.name }}: {{ song.cnt }}</p>
+                    {% endif %}
+                {% endfor %}
+
+            </div>
+        </div>
+        <!--Album info block end-->
+        <br>
+        <hr>
+        <!--Slider start-->
+        {% if rec_albs %}
+        <div class="row mb-2"><h2>Рекомендации:</h2></div>
+        <div class="row">
+            <div class="container">
+                <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+
+                    <!--content-->
+                    <div class="carousel-inner">
+                        {% for album in rec_albs %}
+                            {% if forloop.counter0|divisibleby:"4" %}
+                            <div class="carousel-item card-deck {% if forloop.first %}active{% endif %}">
+                                <!--Card group start-->
+                                <div class="card-deck ml-2 mt-2">
+                            {% endif %}
+
+                                <!--Card-->
+                                <div class="card mb-4">
+                                    <!--Card image start-->
+                                    <div class="view overlay">
+                                        <img src="{% if album.image %}{{ album.image.url }}{% else %}
+                                                          {% static "img/no_album_image.jpg" %}{% endif %}"
+                                             alt=""
+                                             class="card-img-top"
+                                             width="100px"
+                                             height="100px"
+                                             style="object-fit: cover;">
+                                    </div>
+                                    <!--/.Card image end-->
+
+                                    <!--Card content-->
+                                    <div class="card-body">
+                                        <h4 class="card-title"><a href="{{ album.get_absolute_url }}">{{ album.title }}</a></h4>
+                                    </div>
+                                    <!--/.Card content-->
+                                </div>
+                                <!--/.Card-->
+
+                            {% if forloop.counter|divisibleby:"4" or forloop.last %}
+                                </div>
+                            <!--/.Card group-->
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <!--/.content-->
+
+                    <!--Controls-->
+                    {% if rec_albs|length > 4 %}
+                        <a class="carousel-control-prev" href="#carouselExampleControls" role="button"
+                           data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselExampleControls" role="button"
+                           data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    {% endif %}
+                    <!--/.Controls-->
+                </div>
+            </div>
+        </div>
+        <!--Slider end-->
+        {% endif %}
+
+        <!--Start tracks block-->
+        <div class="row mt-3">
+            <h1 class="mx-auto mb-2">Музыка</h1>
+            <br>
+            <div class="container mt-2">
+                {% for song in album.songs.all %}
+                    {% include 'music/track_part.html' with song=song %}
+                {% empty %}
+                    Ничего не найдено
+                {% endfor %}
+
+
+            </div>
+        </div>
+        <!--Ens tracks block-->
+    </div>
+
+{% endblock %}

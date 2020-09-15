@@ -1,0 +1,40 @@
+{% load static %}
+
+<div>
+    <div class="row my-1">
+        <div class="col-1">
+            <img src="{% if song.image %}{{ song.image.url }}{% else %}
+                                            {% static "img/no_song_image.png" %}{% endif %}"
+                 alt=""
+                 height="80px"
+                 width="80px"
+                 class="z-depth-1"
+                 style="object-fit: cover;">
+        </div>
+        <div class="col-4 float-left">
+            <h6 class="font-weight-bold"><a href="{{ song.get_absolute_url }}">{{ song.title }}</a>
+            </h6>
+            <span>{% for singer in song.singers.all %}
+                <a href="{{ singer.get_absolute_url }}">{{ singer.name }}</a>{% endfor %}
+                                </span>
+        </div>
+        <div class="col float-right">
+            <audio controls>
+                <source src="{{ song.track.url }}"/>
+            </audio>
+        </div>
+    {% if request.user.is_authenticated %}
+        <div class="col-1">
+            <a href="#"
+               id="track{{ song.id }}"
+               data-id="{{ song.id }}"
+               data-action="{% if song in request.user.tracks.all %}delete{% else %}add{% endif %}"
+               class="track">
+                <i class="fas fa-{% if song in request.user.tracks.all %}minus{% else %}plus{% endif %}"></i>
+            </a>
+        </div>
+    {% endif %}
+    </div>
+    <hr/>
+</div>
+

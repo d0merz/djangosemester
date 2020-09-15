@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+    Рекоммендации
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <!--Tracks column-->
+        <div class="col">
+            <h1 class="mx-auto mb-2">Ваши рекоммендации</h1>
+            <br>
+            <div class="container mt-2">
+                {% for song in songs %}
+                    {% include 'music/track_part.html' with song=song %}
+                {% empty %}
+                    Ничего не найдено
+                    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                {% endfor %}
+
+
+            </div>
+        </div>
+        <!--/.Tracks column-->
+    </div>
+{% endblock %}
+
+{% block domready %}
+    $('a.track').click(function(e){
+    var _this=this;
+    e.preventDefault();
+    $.post(
+    '{% url "account:add-song" %}',
+    { id: $(this).data('id'), action: $(this).data('action')},
+    function(data){
+    if (data['status']=='ok'){
+    var previous_action = $(_this).data('action');
+    // Изменяем переменную действия.
+    $(_this).data('action', previous_action == 'add' ?'delete' : 'add');
+    // Изменяем текст ссылки.
+    $(_this).children(".fas").toggleClass('fa-minus fa-plus');
+    }
+    }
+    );
+    });
+{% endblock %}

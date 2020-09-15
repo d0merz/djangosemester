@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}
+    Edit profile {{ request.user.username }}
+{% endblock %}
+
+{% block content %}
+
+    <div class="container my-4">
+        {% for message in messages %}
+            <div class="alert alert-warning alert-dismissible fade show {{ message.tags }}" role="alert">
+                {{ message|safe }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+
+        <!-- Section: Edit Account -->
+        <section class="section">
+            <!-- First row -->
+            <div class="row">
+                <!-- First column -->
+                <div class="col-lg-4 mb-4">
+
+                    <!-- Card -->
+                    <div class="card card-cascade narrower">
+
+                        <!-- Card image -->
+                        <div class="view view-cascade gradient-card-header mdb-color lighten-3">
+                            <h5 class="mb-0 font-weight-bold">Изменить фото</h5>
+                        </div>
+                        <!-- Card image -->
+
+                        <!-- Card content -->
+                        <div class="card-body card-body-cascade text-center">
+                            <div class="view overlay">
+                                <a href="
+                                        {% if request.user.profile.photo %}{{ request.user.profile.photo.url }}
+                                        {% else %}{% static "img/no_avatar.png" %}{% endif %}">
+                                    <img src="
+                                            {% if request.user.profile.photo %}{{ request.user.profile.photo.url }}
+                                            {% else %}{% static "img/no_avatar.png" %}{% endif %}"
+                                         alt="User Photo"
+                                         class="z-depth-1 mb-3 mx-auto border border-dark rounded"
+                                         width="100px">
+                                    <div class="mask flex-center waves-effect waves-light rgba-black-slight">
+                                        <p class="black-text">Увеличить</p>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="row flex-center">
+                                <form action="{% url 'account:change-avatar' %}" method="post"
+                                      enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    {{ avatar_form|crispy }}
+                                    <button class="btn btn-info btn-rounded btn-sm waves-effect waves-light"
+                                            type="submit"
+                                    >Загрузить
+                                    </button>
+                                </form>
+                                <br>
+                            </div>
+                        </div>
+                        <!-- Card content -->
+
+                    </div>
+                    <!-- Card -->
+
+                </div>
+                <!-- First column -->
+
+                <!-- Second column -->
+                <div class="col-lg-8 mb-4">
+
+                    <!-- Card -->
+                    <div class="card card-cascade narrower">
+
+                        <!-- Card image -->
+                        <div class="view view-cascade gradient-card-header mdb-color lighten-3">
+                            <h5 class="mb-0 font-weight-bold">Редактировать профиль</h5>
+                        </div>
+                        <!-- Card image -->
+                        <!-- Card content -->
+                        <div class="card-body card-body-cascade text-center">
+                            <!-- Edit Form -->
+                            <form action="." method="post">
+                                {% csrf_token %}
+                                <!-- First row -->
+                                <div class="row">
+                                    <!-- First column -->
+                                    <div class="col-md-6">
+                                        <div class=" mb-0">
+                                            {{ user_form.username|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <!-- Second column -->
+                                    <div class="col-md-6">
+                                        <div class=" mb-0">
+                                            {{ user_form.email|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- First row -->
+                                <!-- First row -->
+                                <div class="row">
+                                    <!-- First column -->
+                                    <div class="col-md-6">
+                                        <div class=" mb-0">
+                                            {{ user_form.first_name|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <!-- Second column -->
+                                    <div class="col-md-6">
+                                        <div class=" mb-0">
+                                            {{ user_form.last_name|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- First row -->
+                                <!-- Second row -->
+                                <div class="row">
+                                    <!-- First column -->
+                                    <div class="col-md-12">
+                                        <div class="mb-0">
+                                            {{ profile_form.love_genres|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Second row -->
+                                <!-- Third row -->
+                                <div class="row">
+                                    <!-- First column -->
+                                    <div class="col-md-12">
+                                        <div class="mb-0">
+                                            {{ profile_form.gender|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Third row -->
+                                <!-- Fourth row -->
+                                <div class="row">
+                                    <div class="col-md-12 text-center my-4">
+                      <span class="waves-input-wrapper waves-effect waves-light">
+                          <input type="submit" value="Обновить" class="btn btn-info btn-rounded">
+                      </span>
+                                    </div>
+                                </div>
+                                <!-- Fourth row -->
+                            </form>
+                            <!-- Edit Form -->
+                        </div>
+                        <!-- Card content -->
+                    </div>
+                    <!-- Card -->
+                </div>
+                <!-- Second column -->
+            </div>
+            <!-- First row -->
+        </section>
+        <!-- Section: Edit Account -->
+    </div>
+
+
+{% endblock %}

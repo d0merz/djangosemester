@@ -1,0 +1,27 @@
+<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <linearGradient y2="0.5" y1="0.5" x2="1" x1="0" id="SVGID_1_">
+   <stop stop-color="#33B49D" offset="0"/>
+   <stop stop-color="#00A185" offset="1"/>
+  </linearGradient>
+  <linearGradient y2="0.5" y1="0.5" x2="1" x1="0" id="SVGID_2_">
+   <stop stop-color="#00A185" offset="0"/>
+   <stop stop-color="#33B49D" offset="1"/>
+  </linearGradient>
+ </defs>
+ <g>
+  <title>background</title>
+  <rect fill="none" id="canvas_background" height="402" width="582" y="-1" x="-1"/>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <g transform="rotate(-180 256,255.99999999999997) " id="svg_1">
+   <g id="svg_2">
+    <circle id="svg_3" r="256" fill="url(#SVGID_1_)" cy="256" cx="256"/>
+    <path id="svg_4" fill="url(#SVGID_2_)" d="m256,469.33386c-117.63153,0 -213.33334,-95.70187 -213.33334,-213.33334c0,-117.63092 95.7018,-213.33331 213.33334,-213.33331c117.6362,0 213.33334,95.7024 213.33334,213.33331c0,117.63147 -95.69714,213.33334 -213.33334,213.33334z"/>
+   </g>
+   <polygon points="248.4991455,159.5013275 144,264 248.4991455,368.4992065 248.4991455,313.078949    384,313.078949 384,214.9221344 248.4991455,214.9221344  " opacity="0.3" id="XMLID_80_"/>
+   <polygon points="240.4991455,151.5013275 136,256 240.4991455,360.4992065 240.4991455,305.078949    376,305.078949 376,206.9221344 240.4991455,206.9221344  " id="XMLID_201_" fill="#FFFFFF"/>
+  </g>
+ </g>
+</svg>

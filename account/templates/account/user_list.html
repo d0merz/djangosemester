@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+    Пользователи
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row"><h1>Пользователи:</h1></div>
+        <div class="row row-cols-2 row-cols-md-4 ">
+            {% for profile in profiles %}
+                <!-- Card -->
+                <div class="col mb-2">
+                    <div class="card">
+
+                        <!-- Card image -->
+                        <div class="view overlay">
+                            <a href="{{ profile.get_absolute_url }}">
+                                <img src="
+                                            {% if profile.photo %}{{ profile.photo.url }}
+                                            {% else %}{% static "img/no_avatar.png" %}{% endif %}"
+                                     alt="User Photo"
+                                     class="card-img-top z-depth-1 rounded"
+                                     style="object-fit: cover;"
+                                     width="400px"
+                                >
+                                <div class="mask flex-center waves-effect waves-light rgba-blue-strong">
+                                    <p class="black-text">Перейти</p>
+                                </div>
+                            </a>
+                        </div>
+
+
+                        <!-- Card content -->
+                        <div class="card-body">
+                            <!-- Title -->
+                            <h4 class="card-title"><a
+                                    href="{{ profile.get_absolute_url }}">{{ profile.user.username }}</a></h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card -->
+            {% empty %}
+                <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

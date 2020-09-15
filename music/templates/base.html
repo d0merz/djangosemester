@@ -1,0 +1,144 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+
+    {% endblock %}
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <link rel="stylesheet" href="{% static "css/style.css" %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <link rel="stylesheet" href="{% static "lib/mdbootstrap2/css/bootstrap.min.css" %}">
+    <link rel="stylesheet" href="{% static "lib/mdbootstrap2/css/mdb.min.css" %}">
+
+</head>
+<body class="black-skin">
+<!--Main Navigation-->
+<header>
+
+    <nav class="navbar navbar-expand-md navbar-dark">
+        <a class="navbar-brand" href="{% url 'music:song_list' %}"><strong>Musica</strong></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url "music:song_list" %}">Треки</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'music:album-list' %}">Альбомы</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'music:singer-list' %}">Исполнители</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'account:profile-list' %}">Пользователи</a>
+                </li>
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'music:rec-music' %}">Рекомендации</a>
+                    </li>
+                {% endif %}
+
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'account:my-music' %}">Моя музыка</a>
+                    </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'music:add-content' %}">Загрузить музыку</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/api/v1/">API</a>
+                </li>
+
+            </ul>
+            <ul class="navbar-nav ml-auto nav-flex-icons">
+                <li class="nav-item dropdown">
+
+                    <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-333" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        {% if request.user.is_authenticated %}
+                            {{ request.user.username }}
+                        {% endif %}
+                        <i class="fas fa-user"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-default"
+                         aria-labelledby="navbarDropdownMenuLink-333">
+                        {% if request.user.is_authenticated %}
+                            <a class="dropdown-item" href="{% url 'account:profile' %}">Мои профиль</a>
+                            <a class="dropdown-item" href="{% url 'account:logout' %}">Выйти</a>
+                        {% else %}
+                            <a class="dropdown-item" href="{% url 'account:login' %}">Войти</a>
+                            <a class="dropdown-item" href="{% url 'account:register' %}">Регистрация</a>
+                        {% endif %}
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+</header>
+<!--Main Navigation-->
+{% block content %}
+
+
+
+
+{% endblock %}
+<!-- Footer -->
+<footer class="page-footer font-small pt-4 ">
+    <!-- Footer Elements -->
+    <div class="container">
+        <!-- Call to action -->
+        <ul class="list-unstyled list-inline text-center py-2">
+            <li class="list-inline-item">
+                <h5 class="mb-1">Register for free</h5>
+            </li>
+            <li class="list-inline-item">
+                <a href="{% url 'account:register' %}" class="btn btn-outline-white btn-rounded">Sign up!</a>
+            </li>
+        </ul>
+        <!-- Call to action -->
+    </div>
+    <!-- Footer Elements -->
+    <!-- Copyright -->
+    <div class="footer-copyright text-center py-3">© 2020 Copyright:
+        <a href="{% url 'music:song_list' %}"> Music.com</a>
+    </div>
+    <!-- Copyright -->
+</footer>
+<!-- Footer -->
+
+<script type="text/javascript" src="{% static 'lib/mdbootstrap2/js/jquery.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'lib/mdbootstrap2/js/popper.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'lib/mdbootstrap2/js/bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'lib/mdbootstrap2/js/mdb.min.js' %}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<script>
+    var csrftoken = Cookies.get('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+    $(document).ready(function () {
+        {% block domready %}
+
+        {% endblock %}
+    });
+</script>
+</body>
+</html>

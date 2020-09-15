@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    {{ song.title }}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row my-3">
+            <div class="col-3">
+                <img src="{% if song.image %}{{ song.image.url }}{% else %}
+                            {% static "img/no_song_image.png" %}{% endif %}"
+                     height="300px"
+                     class="z-depth-1"
+                     style="object-fit: cover; max-width: 250px;"
+                     alt="">
+                <h1 class="card-title"> {{ song.title }}</h1>
+            </div>
+            <div class="col">
+                <p>
+                    Исполнители:
+                    <span>
+                        {% for singer in song.singers.all %}
+                            <a href="{{ singer.get_absolute_url }}">{{ singer.name }}</a>
+                        {% endfor %}
+                    </span>
+                </p>
+                <p>
+                    Опубликовано: {{ song.published|date:"d-m-Y" }}
+                </p>
+                <p>
+                    Жанр: {{ song.genre.name }}
+                </p>
+                <p>
+                    {% if song.album %}
+                        Альбом: <a href="{{ song.album.get_absolute_url }}">{{ song.album.title }}</a>
+                    {% else %}
+                        СИНГЛ
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="container-audio">
+                <audio controls style="width: 100%">
+                    <source src="{{ song.track.url }}" type="audio/ogg">
+                    Your browser dose not Support the audio Tag
+                </audio>
+            </div>
+        </div>
+
+        {% if song.clip_link %}
+            <div class="row my-2">
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe class="embed-responsive-item"
+                            width="560"
+                            height="315"
+                            src="{{ song.clip_link }}"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+{% endblock %}

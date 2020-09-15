@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+    Альбомы
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row"><h1>Альбомы:</h1></div>
+
+        <div class="row row-cols-2 row-cols-md-4 ">
+            {% for album in albums %}
+                <!-- Card -->
+                <div class="col mb-2">
+                    <div class="card">
+
+                        <!-- Card image -->
+                        <img class="card-img-top" src="{% if album.image %}{{ album.image.url }}{% else %}
+                            {% static "img/no_album_image.jpg" %}{% endif %}"
+                             alt="Card image cap" style="object-fit: cover;">
+
+                        <!-- Card content -->
+                        <div class="card-body">
+
+                            <!-- Title -->
+                            <h4 class="card-title"><a href="{{ album.get_absolute_url }}">{{ album.title }}</a></h4>
+                            <!-- Text -->
+                            <p class="card-text"><a
+                                    href="{{ album.author.get_absolute_url }}">{{ album.author.name }}</a>
+                                <br><i>{{ album.published|date:"d F Y" }}</i></p>
+                            <!-- Button -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Card -->
+            {% empty %}
+                <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
